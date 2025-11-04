@@ -5,124 +5,126 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Products — Digital Library</title>
 
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-    crossorigin="anonymous"
-  />
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/products.css" />
 </head>
 <body>
   <div data-include="partials/header.html"></div>
 
-  <main class="container">
+  <main class="container page-products">
     <section class="intro text-center" aria-labelledby="products-title">
-      <h2 id="products-title" class="fw-bold">Products</h2>
-      <p class="lead">
-        Browse our curated selection. Each product has a short description and a transparent price.
-      </p>
+      <h2 id="products-title" class="fw-bold">Digital Library</h2>
+      <p class="lead">Explore our curated collection — search, filter, and find your next great read.</p>
     </section>
 
+    <!-- Filters -->
+    <section class="filters mb-5" aria-label="Product filters">
+      <div class="row g-3 justify-content-center align-items-end">
+        <div class="col-12 col-md-4">
+          <label for="searchInput" class="form-label">Search by Title</label>
+          <input type="text" id="searchInput" class="form-control" placeholder="e.g. Clean Code">
+        </div>
+        <div class="col-6 col-md-3">
+          <label for="genreSelect" class="form-label">Genre</label>
+          <select id="genreSelect" class="form-select">
+            <option value="">All genres</option>
+            <option value="design">Design</option>
+            <option value="programming">Programming</option>
+            <option value="data">Data</option>
+            <option value="fiction">Fiction</option>
+            <option value="philosophy">Philosophy</option>
+          </select>
+        </div>
+        <div class="col-6 col-md-3">
+          <label for="priceRange" class="form-label">Max Price: <span id="priceValue">$50</span></label>
+          <input type="range" id="priceRange" class="form-range" min="10" max="50" step="1" value="50">
+        </div>
+      </div>
+    </section>
+
+    <!-- Catalog -->
     <section class="catalog" aria-label="Product list">
       <div class="grid" id="products-grid">
-        <article class="card product">
+        <!-- Каждая карточка имеет data-genre / data-price и кнопку add-to-cart -->
+        <article class="card product" data-genre="fiction" data-price="14.99" data-id="the-great-library">
           <figure class="card-media">
-            <img src="assets/images/book-1.png" alt="The Great Library — cover" loading="lazy" />
+            <img src="assets/images/book-1.png" alt="The Great Library — cover" loading="lazy" decoding="async" />
           </figure>
           <h3 class="card-title">The Great Library</h3>
           <p class="card-meta">A modern classic about knowledge and power.</p>
           <p class="price">$14.99</p>
-          <button class="btn-buy">Buy</button>
-          <details class="card-details">
-            <summary>Details</summary>
-            <p>Paperback • 320 pages • ISBN 978-1-2345-6789-0</p>
-          </details>
+          <button class="btn-buy" data-add="the-great-library">Add to Cart</button>
+          <a href="details.html?book=the-great-library" class="btn-details">Details</a>
         </article>
 
-        <article class="card product">
+        <article class="card product" data-genre="design" data-price="24.00" data-id="designing-uis">
           <figure class="card-media">
-            <img src="assets/images/book-2.png" alt="Designing UIs — cover" loading="lazy" />
+            <img src="assets/images/book-2.png" alt="Designing UIs — cover" loading="lazy" decoding="async" />
           </figure>
           <h3 class="card-title">Designing UIs</h3>
           <p class="card-meta">Practical patterns for better interfaces.</p>
           <p class="price">$24.00</p>
-          <button class="btn-buy">Buy</button>
-          <details class="card-details">
-            <summary>Details</summary>
-            <p>Hardcover • 280 pages • ISBN 978-1-1111-2222-3</p>
-          </details>
+          <button class="btn-buy" data-add="designing-uis">Add to Cart</button>
+          <a href="details.html?book=designing-uis" class="btn-details">Details</a>
         </article>
 
-        <article class="card product">
+        <article class="card product" data-genre="data" data-price="18.50" data-id="data-stories">
           <figure class="card-media">
-            <img src="assets/images/book-3.png" alt="Data Stories — cover" loading="lazy" />
+            <img src="assets/images/book-3.png" alt="Data Stories — cover" loading="lazy" decoding="async" />
           </figure>
           <h3 class="card-title">Data Stories</h3>
           <p class="card-meta">Make data speak with narrative visuals.</p>
           <p class="price">$18.50</p>
-          <button class="btn-buy">Buy</button>
-          <details class="card-details">
-            <summary>Details</summary>
-            <p>Paperback • 256 pages • ISBN 978-9-8765-4321-0</p>
-          </details>
+          <button class="btn-buy" data-add="data-stories">Add to Cart</button>
+          <a href="details.html?book=data-stories" class="btn-details">Details</a>
         </article>
 
-        <article class="card product">
+        <article class="card product" data-genre="programming" data-price="29.99" data-id="clean-code">
           <figure class="card-media">
-            <img src="assets/images/book-4.png" alt="Clean Code — cover" loading="lazy" />
+            <img src="assets/images/book-4.png" alt="Clean Code — cover" loading="lazy" decoding="async" />
           </figure>
           <h3 class="card-title">Clean Code</h3>
           <p class="card-meta">Timeless practices for writing better code.</p>
           <p class="price">$29.99</p>
-          <button class="btn-buy">Buy</button>
-          <details class="card-details">
-            <summary>Details</summary>
-            <p>Paperback • 464 pages • ISBN 978-0-13-235088-4</p>
-          </details>
+          <button class="btn-buy" data-add="clean-code">Add to Cart</button>
+          <a href="details.html?book=clean-code" class="btn-details">Details</a>
         </article>
 
-        <article class="card product">
+        <article class="card product" data-genre="philosophy" data-price="17.00" data-id="the-algorithmic-mind">
           <figure class="card-media">
-            <img src="assets/images/book-5.png" alt="The Algorithmic Mind — cover" loading="lazy" />
+            <img src="assets/images/book-5.png" alt="The Algorithmic Mind — cover" loading="lazy" decoding="async" />
           </figure>
           <h3 class="card-title">The Algorithmic Mind</h3>
           <p class="card-meta">How algorithms shape decisions.</p>
           <p class="price">$17.00</p>
-          <button class="btn-buy">Buy</button>
-          <details class="card-details">
-            <summary>Details</summary>
-            <p>Paperback • 300 pages • ISBN 978-0-12-345678-9</p>
-          </details>
+          <button class="btn-buy" data-add="the-algorithmic-mind">Add to Cart</button>
+          <a href="details.html?book=the-algorithmic-mind" class="btn-details">Details</a>
         </article>
 
-        <article class="card product">
+        <article class="card product" data-genre="design" data-price="21.00" data-id="minimal-design">
           <figure class="card-media">
-            <img src="assets/images/book-6.png" alt="Minimal Design — cover" loading="lazy" />
+            <img src="assets/images/book-6.png" alt="Minimal Design — cover" loading="lazy" decoding="async" />
           </figure>
           <h3 class="card-title">Minimal Design</h3>
           <p class="card-meta">Less, but better — design thinking.</p>
           <p class="price">$21.00</p>
-          <button class="btn-buy">Buy</button>
-          <details class="card-details">
-            <summary>Details</summary>
-            <p>Hardcover • 240 pages • ISBN 978-3-16-148410-0</p>
-          </details>
+          <button class="btn-buy" data-add="minimal-design">Add to Cart</button>
+          <a href="details.html?book=minimal-design" class="btn-details">Details</a>
         </article>
       </div>
     </section>
   </main>
 
+  <script src="js/cart-core.js"></script>
+  <div data-include="partials/floating-cart.html"></div>
   <div data-include="partials/footer.html"></div>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous">
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/includes.js"></script>
+  <script src="js/books-data.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/floating-cart.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

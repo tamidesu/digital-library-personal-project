@@ -1,0 +1,147 @@
+body {
+  background: radial-gradient(circle at 50% 20%, #0a0c13 0%, #040509 100%);
+  color: #e5e7eb;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+}
+
+/* --- Контейнер страницы --- */
+.page-details {
+  padding: 5rem 1rem 6rem;
+  min-height: calc(100vh - 200px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* --- Обертка книги --- */
+.book-container {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 22px;
+  box-shadow: 0 0 40px rgba(168,85,247,0.2);
+  padding: 3rem;
+  max-width: 1100px;
+  width: 100%;
+  backdrop-filter: blur(12px);
+  animation: fadeInUp 0.8s ease both;
+}
+
+/* --- Анимация появления --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Обложка книги --- */
+.book-cover {
+  max-width: 320px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(99,102,241,0.4);
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.book-cover:hover {
+  transform: scale(1.07) rotateY(3deg);
+  box-shadow: 0 30px 60px rgba(168,85,247,0.5);
+}
+
+/* Фон-свет за обложкой */
+.book-cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(99,102,241,0.4), transparent 70%);
+  z-index: -1;
+}
+
+/* --- Заголовок --- */
+.gradient-text {
+  background: linear-gradient(90deg, #60a5fa, #a855f7, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  font-size: 2.7rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.book-author {
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.book-description {
+  color: rgba(255,255,255,0.85);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  max-width: 600px;
+}
+
+.book-meta {
+  margin-bottom: 2rem;
+}
+
+.book-meta li {
+  margin-bottom: 0.3rem;
+  color: rgba(255,255,255,0.8);
+}
+
+.book-meta strong {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+/* --- Цена + кнопки --- */
+.price-section {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.price-tag {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #60a5fa;
+  margin: 0;
+}
+
+.btn-buy {
+  background: linear-gradient(90deg, #60a5fa, #a855f7);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 26px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(99,102,241,0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-buy:hover {
+  background: linear-gradient(90deg, #a855f7, #60a5fa);
+  transform: translateY(-3px);
+  box-shadow: 0 0 30px rgba(168,85,247,0.55);
+}
+
+.btn-back {
+  text-decoration: none;
+  color: #60a5fa;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.btn-back:hover {
+  color: #a855f7;
+}

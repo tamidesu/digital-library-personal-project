@@ -30,6 +30,55 @@ body {
   padding: 3rem 0 6rem;
 }
 
+.filters {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(99,102,241,0.1);
+}
+
+.filters label {
+  color: rgba(255,255,255,0.8);
+  font-weight: 500;
+}
+
+.filters input,
+.filters select {
+  background: rgba(255,255,255,0.1);
+  color: #e5e7eb;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.filters input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.filters select option {
+  background: #0a0c13;
+  color: #e5e7eb;
+}
+
+.btn-details {
+  display: inline-block;
+  margin-top: 0.6rem;
+  background: rgba(99,102,241,0.15);
+  border: 1px solid rgba(99,102,241,0.3);
+  color: #60a5fa;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.btn-details:hover {
+  background: rgba(168,85,247,0.25);
+  color: #a855f7;
+  transform: translateY(-2px);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

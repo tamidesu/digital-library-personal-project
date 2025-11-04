@@ -12,6 +12,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         const wrapper = document.createElement("div");
         wrapper.innerHTML = html.trim();
         el.replaceWith(...wrapper.childNodes);
+
+        const scripts = wrapper.querySelectorAll("script");
+        scripts.forEach((oldScript) => {
+          const newScript = document.createElement("script");
+          if (oldScript.src) {
+            newScript.src = oldScript.src;
+          } else {
+            newScript.textContent = oldScript.textContent;
+          }
+          document.body.appendChild(newScript);
+        });
+
+        if (file.includes("header.html")) {
+          document.dispatchEvent(new Event("header:loaded"));
+        }
+        if (file.includes("floating-cart.html")) {
+          document.dispatchEvent(new Event("floatingCart:loaded"));
+        }
+
       } catch (err) {
         console.error("Include failed:", file, err);
       }
