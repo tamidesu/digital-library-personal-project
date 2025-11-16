@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       root.innerHTML = `
         <div class="text-center py-5">
           <h3 class="mb-3">Your cart is empty</h3>
-          <p class="text-muted mb-4">Add some books to start building your library.</p>
+          <p class="empty-sub">Add some books to start building your library.</p>
           <a href="products.html" class="btn-back">← Back to Catalog</a>
         </div>`;
       return;
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 
   document.getElementById('btnCheckout')?.addEventListener('click', ()=>{
-    alert(`Checkout not implemented. Total: ${Currency.format(window.Cart.getTotalAmount())}`);
+    location.href = 'checkout.html';
   });
 
   document.addEventListener('cart:updated', render);

@@ -241,3 +241,136 @@ body {
     font-size: 2.2rem;
   }
 }
+
+:root[data-theme="light"] body{
+  background: #f7f7fb !important;
+  color: #0b1020 !important;
+}
+:root[data-theme="light"] .intro p{ color:#667085; }
+ 
+:root[data-theme="light"] .filters{
+  background:#ffffff;
+  border-color:#e6e8ee;
+  box-shadow: 0 10px 24px rgba(8,12,26,.08);
+}
+:root[data-theme="light"] .filters label{ color:#344256; }          /* slate-700 */
+:root[data-theme="light"] .filters input,
+:root[data-theme="light"] .filters select{
+  background:#fff;
+  color:#0b1020;
+  border-color:#cfd6e2;
+}
+:root[data-theme="light"] .filters input::placeholder{ color:#94a3b8; }
+:root[data-theme="light"] .filters select option{
+  background:#ffffff; color:#0b1020;
+}
+ 
+:root[data-theme="light"] .product,
+:root[data-theme="light"] .product.card{
+  background:#ffffff !important;
+  border-color:#e6e8ee !important;
+  color:#0b1020 !important;
+  box-shadow: 0 10px 24px rgba(8,12,26,.08) !important;
+}
+:root[data-theme="light"] .card-media{ background:#fff; }
+:root[data-theme="light"] .card-title{
+  -webkit-text-fill-color: initial;     /* снимаем принудительную заливку */
+  background: none;
+  color:#0b1020;
+}
+:root[data-theme="light"] .card-meta{ color:#667085; }
+:root[data-theme="light"] .price{ color:#2563eb; }
+ 
+:root[data-theme="light"] .product::before{
+  background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(59,130,246,.16), transparent 120px);
+}
+ 
+:root[data-theme="light"] .btn-details{
+  background:#eef2ff;
+  border-color:#c7d2fe;
+  color:#2563eb;
+}
+:root[data-theme="light"] .btn-details:hover{
+  background:#e0e7ff;
+  color:#1d4ed8;
+}
+:root[data-theme="light"] .btn-buy{
+  box-shadow: 0 10px 22px rgba(37,99,235,.18);
+}
+ 
+:root[data-theme="light"] .card-details p{ color:#475569; }
+:root[data-theme="light"] .card-details summary{ color:#2563eb; }
+:root[data-theme="light"] .card-details[open] summary{ color:#7c3aed; }
+ 
+html[data-theme] .filters,
+html[data-theme] .product,
+html[data-theme] .btn-details,
+html[data-theme] .btn-buy,
+html[data-theme] .card-details p,
+html[data-theme] .card-details summary{
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.product {
+  opacity: 0;
+  transform: translateY(24px) scale(.985);
+  transition: transform .6s cubic-bezier(.22,.8,.24,1), opacity .6s ease, box-shadow .35s ease;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+.product.in-view {
+  opacity: 1;
+  transform: none;
+}
+
+.product {
+  --rx: 0;
+  --ry: 0;
+  --gx: 50%;
+  --gy: 50%;
+  transform: rotateX(calc(var(--rx) * 1deg)) rotateY(calc(var(--ry) * 1deg));
+  perspective: 800px;
+}
+.product::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(260px 260px at var(--gx) var(--gy),
+              rgba(99,102,241,.20), rgba(168,85,247,.10) 40%, transparent 70%);
+  opacity: 0;
+  transition: opacity .25s ease, background .2s;
+  z-index: 0;
+  pointer-events: none;
+}
+.product:hover::before { opacity: .8; }
+
+.card-media { position: relative; overflow: hidden; }
+.card-media::after {
+  content: "";
+  position: absolute;
+  inset: -20% -120% -20% -120%;
+  background: linear-gradient(110deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
+  transform: translateX(-60%) skewX(-20deg);
+  opacity: 0;
+  transition: transform .9s ease, opacity .3s ease;
+  pointer-events: none;
+}
+.product:hover .card-media::after {
+  transform: translateX(60%) skewX(-20deg);
+  opacity: .65;
+}
+
+.product:hover {
+  box-shadow: 0 18px 38px rgba(59,130,246,.22), 0 0 28px rgba(168,85,247,.28);
+}
+
+@keyframes cartPop {
+  0% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-2px) scale(1.06); }
+  100% { transform: translateY(0) scale(1); }
+}
+.btn-buy.pop { animation: cartPop .45s ease; }
+
+.product .btn-buy { transition: transform .25s ease, box-shadow .25s ease; }
+.product .btn-buy:hover { transform: translateY(-2px); }

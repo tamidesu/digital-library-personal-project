@@ -146,3 +146,74 @@ header {
     font-size: 1.8rem;
   }
 }
+
+:root{
+  --auth-bg-light: #f7f7fb;
+  --auth-text-light: #0b1020;
+  --auth-text-dark: #e5e7eb;
+
+  --auth-card-dark: rgba(255,255,255,.06);
+  --auth-card-dark-brd: rgba(255,255,255,.12);
+  --auth-card-light: #ffffff;
+  --auth-card-light-brd: #e6e8ee;
+
+  --auth-muted-dark: rgba(229,231,235,.82);
+  --auth-muted-light: #475569;
+
+  --auth-label-dark: #93c5fd;  /* светло-голубой */
+  --auth-label-light: #334155;  /* slate-700 */
+
+  --auth-input-bg-dark: rgba(255,255,255,.06);
+  --auth-input-brd-dark: rgba(255,255,255,.12);
+  --auth-input-bg-light: #ffffff;
+  --auth-input-brd-light: #cbd5e1;
+
+  --auth-header-dark: rgba(10,12,18,.72);
+  --auth-header-light: #f9f9f9;
+}
+
+:root[data-theme="dark"] body{
+  color: var(--auth-text-dark);
+}
+
+:root[data-theme="dark"] .auth-card{
+  background: var(--auth-card-dark);
+  border-color: var(--auth-card-dark-brd);
+}
+:root[data-theme="dark"] .auth-subtitle{ color: var(--auth-muted-dark); }
+:root[data-theme="dark"] .form-field label{ color: var(--auth-label-dark); }
+:root[data-theme="dark"] .form-field input{
+  background: var(--auth-input-bg-dark);
+  border-color: var(--auth-input-brd-dark);
+  color: #fff;
+}
+:root[data-theme="dark"] #stars-bg{ opacity: .45; }
+
+:root[data-theme="light"] body{
+  background: var(--auth-bg-light) !important;
+  color: var(--auth-text-light) !important;
+}
+
+
+:root[data-theme="light"] .auth-card{
+  background: var(--auth-card-light);
+  border-color: var(--auth-card-light-brd);
+  color: var(--auth-text-light);
+  box-shadow: 0 10px 24px rgba(8,12,26,.08);
+}
+:root[data-theme="light"] .auth-subtitle{ color: var(--auth-muted-light); }
+:root[data-theme="light"] .form-field label{ color: var(--auth-label-light); }
+:root[data-theme="light"] .form-field input{
+  background: var(--auth-input-bg-light);
+  border-color: var(--auth-input-brd-light);
+  color: var(--auth-text-light);
+}
+:root[data-theme="light"] #stars-bg{ opacity: .18; }
+
+:root[data-theme="light"] body::before{
+  background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(59,130,246,.15), transparent 80px);
+}
+
+html[data-theme] *{
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}

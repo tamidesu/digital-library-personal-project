@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Wishlist — Digital Library</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/products.css"/><!-- reuse grid/cards -->
+</head>
+<body>
+  <div data-include="partials/header.html"></div>
+
+  <main class="container catalog">
+    <section class="intro text-center">
+      <h2 class="fw-bold gradient-text">Wishlist</h2>
+      <p class="lead">Your saved books. Share them or move to cart anytime.</p>
+      <div class="d-flex gap-2 justify-content-center mt-2">
+        <button id="wlClear" class="btn-danger-clear">Clear wishlist</button>
+        <button id="wlShare" class="btn-buy">Copy share link</button>
+      </div>
+    </section>
+
+    <section aria-label="Wishlist items">
+      <div class="grid" id="wishlist-grid"></div>
+    </section>
+  </main>
+
+  <div data-include="partials/floating-cart.html"></div>
+  <div data-include="partials/footer.html"></div>
+
+  <script src="js/includes.js"></script>
+  <script src="js/books-data.js"></script>
+  <script src="js/wishlist-core.js" type="module"></script>
+  <script src="js/products-wishlist.js"></script>
+  <script>
+    // wishlist page renderer
+    (function(){
+      const grid = document.getElementById('wishlist-grid');
+      const WL = window.Wishlist;
+
+      function card(b){
+        return `
+        <article class="card product">
+          <figure class="card-media"><img src="${b.cover}" alt="${b.title} — cover" loading="lazy"/></figure>
+          <h3 class="card-title">${b.title}</h3>
+          <p class="card-meta">${b.author}</p>
+          <p class="price">$${b.price.toFixed(2)}</p>
+          <div class="d-flex justify-content-center gap-2">
+            <a href="details.html?id=${b.id}" class="btn-details">Details</a>
+            <button class="btn-neon btn-buy" data-add="${b.id}">Add to Cart</button>
+            <button class="wishlist-toggle heart is-on" aria-pressed="true" title="Remove from wishlist" data-id="${b.id}">
+              ${heartSVG}
+            </button>
+          </div>
+        </article>`;
+      }
+
+      function render(){
+        const ids = WL.all();
+        const list = BOOKS.filter(b => ids.includes(String(b.id)));
+        if (!list.length){
+          grid.innerHTML = `<div class="empty-card"><h3 class="empty-title">No items yet</h3>
+            <p class="empty-sub">Browse and click the ❤ to save books here.</p>
+            <a class="btn-back mt-3" href="products.html">← Back to Catalog</a></div>`;
+          return;
+        }
+        grid.innerHTML = list.map(card).join('');
+        // rebind wishlist buttons drawn above
+        document.dispatchEvent(new Event('includes:loaded'));
+      }
+
+      // share link (encodes IDs in ?wish=)
+      document.getElementById('wlShare').addEventListener('click', async ()=>{
+        const ids = WL.all();
+        const url = new URL(location.origin + location.pathname);
+        url.searchParams.set('wish', ids.join(','));
+        try { await navigator.clipboard.writeText(url.toString()); alert('Share link copied!'); }
+        catch { prompt('Copy this link:', url.toString()); }
+      });
+
+      document.getElementById('wlClear').addEventListener('click', ()=>{
+        if (confirm('Clear wishlist?')) { WL.clear(); render(); }
+      });
+
+      window.addEventListener('wishlist:updated', render);
+      document.addEventListener('DOMContentLoaded', render);
+    })();
+
+    const heartSVG = `
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M12.1 21s-7.1-4.35-9.5-8.2C1 9.7 2.9 6 6.4 6c2 0 3.2 1.2 3.7 2.1C10.6 7.2 11.8 6 13.8 6 17.3 6 19.2 9.7 17.4 12.8 15 16.7 12.1 21 12.1 21z"
+              stroke="currentColor" stroke-width="1.6" fill="currentColor" />
+      </svg>`;
+  </script>
+  <script src="js/theme.js"></script>
+</body>
+</html>

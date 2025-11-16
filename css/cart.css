@@ -19,6 +19,7 @@ body {
   border-radius: 20px;
   padding: 1.5rem;
   backdrop-filter: blur(12px);
+  color: #e5e7eb;
   box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
 }
 
@@ -88,3 +89,114 @@ body {
   z-index: 9999;
 }
 .cart-toast.show { opacity: 1; transform: translateY(0); }
+
+.empty-card{
+  padding: 36px 28px;
+  border-radius: var(--radius, 14px);
+  background: var(--bg-panel, rgba(255,255,255,.06));
+  border: 1px solid var(--border, rgba(255,255,255,.12));
+  box-shadow: var(--shadow, 0 10px 28px rgba(0,0,0,.45));
+  text-align: center;
+}
+
+.empty-title{
+  margin: 0 0 .5rem 0;
+  font-weight: 800;
+}
+
+:root[data-theme="dark"]  .empty-sub{ color: rgba(229,231,235,.88); }
+:root[data-theme="light"] .empty-sub{ color: #90959b; } 
+
+
+:root[data-theme="light"] body{
+  background: #f7f7fb !important;
+  color: #0b1020 !important;
+}
+
+:root[data-theme="light"] .cart-wrapper{
+  background: #ffffff;
+  border-color: #e6e8ee;
+  color: #0b1020;
+  box-shadow: 0 10px 24px rgba(8,12,26,.08);
+}
+
+:root[data-theme="light"] .cart-table th,
+:root[data-theme="light"] .cart-table td{
+  border-bottom-color: #edf0f5;
+}
+:root[data-theme="light"] .cart-table th{
+  color: #475569;             /* slate-600 */
+}
+:root[data-theme="light"] .cart-item-title{
+  color: #0b1020;
+}
+
+:root[data-theme="light"] .cart-qty{
+  border-color: #d7dde7;
+  background: #ffffff;
+}
+:root[data-theme="light"] .cart-qty input{
+  color: #0b1020;
+}
+:root[data-theme="light"] .cart-qty button{
+  background: #eef2f7;
+  color: #0b1020;
+}
+:root[data-theme="light"] .cart-qty button:hover{
+  background: #e0e7ff;        /* мягкий hover */
+}
+
+:root[data-theme="light"] .price,
+:root[data-theme="light"] .subtotal,
+:root[data-theme="light"] .total-amount{
+  color: #2563eb;              /* light-accent */
+}
+:root[data-theme="light"] .total-row{
+  color: #0b1020;
+}
+
+:root[data-theme="light"] .btn-back{
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #2563eb;
+}
+:root[data-theme="light"] .btn-back:hover{
+  background: #e0e7ff;
+  color: #1d4ed8;
+}
+
+:root[data-theme="light"] .btn-danger-clear{
+  border-color: #fecaca;
+  background: #fff1f2;
+  color: #dc2626;
+}
+:root[data-theme="light"] .btn-danger-clear:hover{
+  background: #ffe4e6;
+}
+
+:root[data-theme="light"] .cart-toast{
+  background: #ffffff;
+  border-color: #e6e8ee;
+  color: #0b1020;
+  box-shadow: 0 8px 20px rgba(8,12,26,.08);
+}
+
+:root[data-theme="light"] .empty-card{
+  background: #ffffff;
+  border-color: #e6e8ee;
+  box-shadow: 0 10px 24px rgba(8,12,26,.08);
+}
+:root[data-theme="light"] .empty-title{ color: #0b1020; }
+:root[data-theme="light"] .empty-sub{ color: #475569; } /* был #90959b — делаем контрастней */
+
+html[data-theme] .cart-wrapper,
+html[data-theme] .cart-table th,
+html[data-theme] .cart-table td,
+html[data-theme] .cart-qty,
+html[data-theme] .cart-qty button,
+html[data-theme] .btn-back,
+html[data-theme] .btn-danger-clear,
+html[data-theme] .cart-toast,
+html[data-theme] .empty-card{
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}

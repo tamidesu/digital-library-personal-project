@@ -18,7 +18,15 @@ document.addEventListener("includes:loaded", () => {
   window.addEventListener("cart:updated", bounce);
   document.addEventListener("cart:updated", bounce);
 
-  el.addEventListener("click", () => window.location.href = "cart.html");
+  el.addEventListener("click", (e) => {
+    if (window.MiniCart && document.getElementById("mcDrawer")) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      window.MiniCart.open();
+    } else {
+      window.location.href = "cart.html";
+    }
+  });
 
   updateCount();
 });
