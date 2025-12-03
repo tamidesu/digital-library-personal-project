@@ -157,3 +157,103 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.classList.add('pop');
   });
 })();
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (!window.BOOKS) return;
+
+    const cards = document.querySelectorAll(".card.product");
+
+    cards.forEach(card => {
+        const id = card.getAttribute("data-id");
+        if (!id) return;
+
+        const book = window.BOOKS.find(b => b.id === id || b.slug === id || b.dataId === id || b.bookId === id);
+
+        if (!book) return;
+
+        if (book.bfDeal) {
+            const sticker = card.querySelector(".bf-sticker");
+            const priceEl = card.querySelector(".price");
+
+            if (sticker) {
+                sticker.hidden = false;
+                const discount = Math.round(book.bfDiscount * 100);
+                sticker.textContent = `Black Friday -${discount}%`;
+            }
+
+            if (priceEl) {
+                const discounted = (book.price * (1 - book.bfDiscount)).toFixed(2);
+
+                priceEl.innerHTML = `
+                    <span class="old-price">$${book.price}</span>
+                    <span class="new-price">$${discounted}</span>
+                `;
+            }
+        }
+    });
+});
+
+(() => {
+  let bfCleaned = false;
+
+  function finalizeBlackFridayUI() {
+    if (bfCleaned) return;
+    bfCleaned = true;
+
+    if (window.BOOKS) {
+      window.BOOKS.forEach(b => {
+        b.bfDeal = false;
+        b.bfDiscount = 0;
+      });
+    }
+
+    document.querySelectorAll(".card.product").forEach(card => {
+      const sticker = card.querySelector(".bf-sticker");
+      const priceEl = card.querySelector(".price");
+
+      if (sticker) {
+        sticker.hidden = true;
+      }
+
+      if (priceEl) {
+        const base = parseFloat(card.dataset.price || "0");
+        if (!isNaN(base) && base > 0) {
+          priceEl.textContent = `$${base.toFixed(2)}`;
+        }
+      }
+    });
+  }
+
+  document.addEventListener("bf:tick", (e) => {
+    const t = e.detail;
+    const box = document.querySelector(".bfp-timer");
+    if (box) {
+      document.querySelector("[data-prod-days]").textContent = t.days;
+      document.querySelector("[data-prod-hours]").textContent = t.hours;
+      document.querySelector("[data-prod-minutes]").textContent = t.minutes;
+      document.querySelector("[data-prod-seconds]").textContent = t.seconds;
+    }
+
+    if (t.ended) {
+      finalizeBlackFridayUI();
+
+      document.querySelector(".bfp-ended")?.classList.add("show");
+
+      setTimeout(() => {
+        const banners = document.querySelectorAll(".bf-ended-banner");
+        banners.forEach(b => b.classList.add("fade-out"));
+        setTimeout(() => banners.forEach(b => b.remove()), 900);
+      }, 2000);
+    }
+  });
+
+  document.addEventListener("bf:ended", () => {
+    finalizeBlackFridayUI();
+
+    setTimeout(() => {
+        const banners = document.querySelectorAll(".bf-ended-banner");
+        banners.forEach(b => b.classList.add("fade-out"));
+        setTimeout(() => banners.forEach(b => b.remove()), 900);
+    }, 20000);
+});
+})();

@@ -18,7 +18,36 @@
       <h2 id="products-title" class="fw-bold">Digital Library</h2>
       <p class="lead">Explore our curated collection — search, filter, and find your next great read.</p>
     </section>
+    <!-- "2024-01-01T00:00:03" -->
+     <!-- "2025-11-29T00:00:00" -->
+      <!-- data-countdown="2025-01-01T00:00:10" -->
+    <section class="bf-promo reveal" data-countdown="2024-01-01T00:00:03">
+      <div class="bfp-content">
 
+        <div class="bfp-left">
+          <h3 class="bfp-title">Black Friday Deals Are Live!</h3>
+          <p class="bfp-text">Get exclusive discounts on selected books before the timer ends.</p>
+        </div>
+
+        <div class="bfp-timer">
+          <span class="bfp-num" data-days>00</span><span class="bfp-colon">:</span>
+          <span class="bfp-num" data-hours>00</span><span class="bfp-colon">:</span>
+          <span class="bfp-num" data-minutes>00</span><span class="bfp-colon">:</span>
+          <span class="bfp-num" data-seconds>00</span>
+        </div>
+
+        <button class="bfp-cta" id="bfp-view-deals">View Deals</button>
+
+        <p class="bfp-ended" hidden>The sale has ended.</p>
+
+      </div>
+    </section>
+    <section class="bf-ended-banner" hidden>
+        <div class="bfe-box">
+            <h2 class="bfe-title">The Black Friday Sale Has Ended</h2>
+            <p class="bfe-sub">Stay tuned for upcoming deals!</p>
+        </div>
+    </section>
     <!-- Filters -->
     <section class="filters mb-5" aria-label="Product filters">
       <div class="row g-3 justify-content-center align-items-end">
@@ -49,6 +78,7 @@
       <div class="grid" id="products-grid">
         <!-- Каждая карточка имеет data-genre / data-price и кнопку add-to-cart -->
         <article class="card product" data-genre="fiction" data-price="14.99" data-id="the-great-library">
+          <div class="bf-sticker" hidden>Black Friday -30%</div>
           <figure class="card-media">
             <img src="assets/images/book-1.png" alt="The Great Library — cover" loading="lazy" decoding="async" />
           </figure>
@@ -61,6 +91,7 @@
         </article>
 
         <article class="card product" data-genre="design" data-price="24.00" data-id="designing-uis">
+          <div class="bf-sticker" hidden>Black Friday -30%</div>
           <figure class="card-media">
             <img src="assets/images/book-2.png" alt="Designing UIs — cover" loading="lazy" decoding="async" />
           </figure>
@@ -94,6 +125,7 @@
         </article>
 
         <article class="card product" data-genre="philosophy" data-price="17.00" data-id="the-algorithmic-mind">
+          <div class="bf-sticker" hidden>Black Friday -30%</div>
           <figure class="card-media">
             <img src="assets/images/book-5.png" alt="The Algorithmic Mind — cover" loading="lazy" decoding="async" />
           </figure>
@@ -130,6 +162,7 @@
   <script src="js/main.js"></script>
   <script src="js/promo-core.js"></script>
   <script src="js/products-minicart.js"></script>
+  <script src="js/countdown.js"></script>
   <script src="js/theme.js"></script>
 </body>
 </html>

@@ -272,3 +272,26 @@ cards.forEach((card) => {
     glow.style.background = "none";
   });
 });
+
+document.addEventListener("bf:tick", (e) => {
+    const t = e.detail;
+    const box = document.querySelector(".bfv-timer");
+
+    if (!box) return;
+
+    document.querySelector("[data-home-days]").textContent = t.days;
+    document.querySelector("[data-home-hours]").textContent = t.hours;
+    document.querySelector("[data-home-minutes]").textContent = t.minutes;
+    document.querySelector("[data-home-seconds]").textContent = t.seconds;
+
+    if (t.ended) {
+        document.querySelector(".bfv-ended")?.classList.add("show");
+    }
+});
+
+document.addEventListener("bf:ended", () => {
+    document.querySelector(".home-bf-ended")?.classList.remove("hidden");
+
+    const timer = document.querySelector(".bfv-timer");
+    if (timer) timer.style.display = "none";
+});

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const section = document.getElementById("book-section");
 
   const book = (window.ProductRepository && window.ProductRepository.byId(bookId))
-             || (window.BOOKS || []).find(b=>b.id===bookId);
+             || (window.BOOKS || []).find(b => b.id === bookId);
 
   if (!book) {
     section.innerHTML = `
@@ -15,13 +15,42 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // ===============================
+  // 💰 BLACK FRIDAY PRICE LOGIC
+  // ===============================
+  let priceHTML = `<p class="price-tag">$${book.price.toFixed(2)}</p>`;
+  let bfRibbon = "";
+  
+  if (book.bfDeal) {
+      const discount = Math.round(book.bfDiscount * 100);
+      const newPrice = (book.price * (1 - book.bfDiscount)).toFixed(2);
+
+      priceHTML = `
+        <div class="bf-price-box">
+            <span class="old-price">$${book.price.toFixed(2)}</span>
+            <span class="new-price">$${newPrice}</span>
+        </div>
+      `;
+
+      bfRibbon = `
+        <div class="bf-sticker-details">
+          Black Friday -${discount}%
+        </div>
+      `;
+  }
+
+  // ===============================
+  // TEMPLATE
+  // ===============================
   section.innerHTML = `
     <div class="book-container">
       <div class="row g-5 align-items-center">
+
         <div class="col-md-5 text-center position-relative">
+          ${bfRibbon}
           <img src="${book.cover}" alt="${book.title} — cover"
-              class="book-cover img-fluid rounded shadow-lg"
-              loading="lazy" decoding="async">
+               class="book-cover img-fluid rounded shadow-lg"
+               loading="lazy" decoding="async">
         </div>
 
         <div class="col-md-7">
@@ -38,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </ul>
 
           <div class="price-section mt-4">
-            <p class="price-tag">$${book.price.toFixed(2)}</p>
+            ${priceHTML}
             <button class="btn-buy" id="addFromDetails">Add to Cart</button>
             <a href="products.html" class="btn-back">← Back to Catalog</a>
           </div>
@@ -47,14 +76,17 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `;
 
-
-  document.getElementById('addFromDetails')?.addEventListener('click', ()=>{
+  // Add to cart button
+  document.getElementById('addFromDetails')?.addEventListener('click', () => {
     window.Cart.add(book, 1);
     const toast = document.createElement('div');
     toast.className = 'cart-toast';
     toast.textContent = `Added: ${book.title}`;
     document.body.appendChild(toast);
-    setTimeout(()=> toast.classList.add('show'),10);
-    setTimeout(()=> { toast.classList.remove('show'); setTimeout(()=>toast.remove(),300); }, 2000);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 2000);
   });
 });

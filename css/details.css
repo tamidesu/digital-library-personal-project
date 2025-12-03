@@ -176,3 +176,39 @@ html[data-theme] .btn-back,
 html[data-theme] .book-cover{
   transition: background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
+
+/* Black Friday ribbon on details */
+.bf-sticker-details {
+  position: absolute;
+  top: -10px;
+  left: -20px;
+
+  background: linear-gradient(135deg, #ff00e6, #6d00ff);
+  padding: 6px 40px;
+
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+
+  transform: rotate(-10deg);
+  box-shadow: 0 0 15px rgba(140, 0, 255, 0.4);
+  border-radius: 4px;
+}
+
+.bf-price-box {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.bf-price-box .old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 1.1rem;
+}
+
+.bf-price-box .new-price {
+  color: #ff3dfc;
+  font-size: 1.6rem;
+  font-weight: 700;
+}

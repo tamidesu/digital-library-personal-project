@@ -200,3 +200,23 @@ html[data-theme] .cart-toast,
 html[data-theme] .empty-card{
   transition: background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
+
+.old-price {
+  text-decoration: line-through;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.new-price {
+  color: #c88bff;
+  font-weight: 700;
+}
+
+.bf-small {
+  background: linear-gradient(135deg, #ff00e6, #6d00ff);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  color: white;
+  box-shadow: 0 0 6px rgba(150, 0, 255, 0.3);
+}
