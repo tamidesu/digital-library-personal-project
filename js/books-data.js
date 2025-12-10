@@ -1,12 +1,9 @@
 // js/books-data.js
-// Единый источник данных для всего сайта (frontend часть)
+// Централизованное хранилище данных сайта + IndexedDB
 
 (function (window) {
   const STORAGE_KEY = "digital_library_data_v1";
 
-  // 1) Стартовые книги
-  // СЮДА просто вставь свой текущий массив объектов книг
-  // (тот, что был в window.BOOKS) вместо примера ниже
   const DEFAULT_BOOKS = [
     {
       id: "the-great-library",
@@ -20,8 +17,8 @@
       isbn: "978-1-2345-6789-0",
       description:
         "In a world where knowledge is the ultimate power, the Great Library controls all written words. A story of rebellion, forbidden books, and the thirst for truth — a timeless modern classic.",
-      bfDeal: false, 
-      bfDiscount: 0.30 
+      bfDeal: false,
+      bfDiscount: 0.3,
     },
     {
       id: "designing-uis",
@@ -35,8 +32,8 @@
       isbn: "978-1-1111-2222-3",
       description:
         "Practical design patterns for creating better, more accessible user interfaces with timeless usability principles.",
-      bfDeal: true, 
-      bfDiscount: 0.30 
+      bfDeal: true,
+      bfDiscount: 0.3,
     },
     {
       id: "data-stories",
@@ -49,7 +46,7 @@
       pages: 256,
       isbn: "978-9-8765-4321-0",
       description:
-        "Learn how to make data speak through storytelling and narrative visualization techniques that engage and inform."
+        "Learn how to make data speak through storytelling and narrative visualization techniques that engage and inform.",
     },
     {
       id: "clean-code",
@@ -62,7 +59,7 @@
       pages: 464,
       isbn: "978-0-13-235088-4",
       description:
-        "Timeless practices for writing clean, efficient, and maintainable code from one of the masters of software engineering."
+        "Timeless practices for writing clean, efficient, and maintainable code from one of the masters of software engineering.",
     },
     {
       id: "the-algorithmic-mind",
@@ -75,7 +72,7 @@
       pages: 300,
       isbn: "978-0-12-345678-9",
       description:
-        "Explore how algorithms shape human thought and decision-making in a deeply philosophical journey."
+        "Explore how algorithms shape human thought and decision-making in a deeply philosophical journey.",
     },
     {
       id: "minimal-design",
@@ -89,79 +86,221 @@
       isbn: "978-3-16-148410-0",
       description:
         "Less, but better — timeless lessons in design thinking and the art of simplicity.",
-      bfDeal: true, 
-      bfDiscount: 0.30 
-    }
+      bfDeal: true,
+      bfDiscount: 0.3,
+    },
   ];
 
+  // ---- Админ по умолчанию (добавили password) ----
   const defaultAdminUser = {
     id: "admin-1",
     name: "Site Admin",
     email: "admin@library.local",
+    password: "admin123",          // <– добавили для логина
     role: "admin",
     status: "active",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
 
-  function createInitialData() {
-    return {
-      products: DEFAULT_BOOKS,
-      users: [defaultAdminUser],
-      activity: [], // пригодится для Recent Activity в админке
-    };
+  let LIB_DATA = {
+    products: [],
+    users: [],
+    activity: [],
+  };
+
+  function dispatchReady() {
+    document.dispatchEvent(new CustomEvent("data:ready", { detail: LIB_DATA }));
   }
 
-  function initLibraryData() {
-    const raw = localStorage.getItem(STORAGE_KEY);
+  // ---- Нормализация пользователей (роль, статус, пароль, даты) ----
+  function normalizeUsers(users) {
+    const now = new Date().toISOString();
+    return (users || []).map((u, idx) => {
+      const copy = { ...u };
+      if (!copy.id) {
+        copy.id = "u-" + (copy.email || idx) + "-" + Date.now();
+      }
+      if (!copy.role) {
+        // если это наш дефолтный админ по email – роль admin
+        if ((copy.email || "").toLowerCase() === "admin@library.local") {
+          copy.role = "admin";
+        } else {
+          copy.role = "user";
+        }
+      }
+      if (!copy.status) {
+        copy.status = "active";
+      }
+      if (!copy.createdAt) {
+        copy.createdAt = now;
+      }
+      if (!copy.updatedAt) {
+        copy.updatedAt = now;
+      }
+      if (!copy.password) {
+        // простейший дефолт для старых записей
+        copy.password = "password";
+      }
+      return copy;
+    });
+  }
 
-    // Если ничего нет – создаём
-    if (!raw) {
-      const data = createInitialData();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      return data;
+  // ---- fallback: localStorage (если IndexedDB недоступен/сломался) ----
+  function initLocalFallback() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) || {};
+        LIB_DATA.products = Array.isArray(parsed.products) ? parsed.products : DEFAULT_BOOKS;
+        LIB_DATA.users =
+          Array.isArray(parsed.users) && parsed.users.length
+            ? parsed.users
+            : [defaultAdminUser];
+        LIB_DATA.activity = Array.isArray(parsed.activity) ? parsed.activity : [];
+      } else {
+        LIB_DATA = {
+          products: DEFAULT_BOOKS,
+          users: [defaultAdminUser],
+          activity: [],
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(LIB_DATA));
+      }
+    } catch (err) {
+      console.warn("Local fallback init failed, resetting", err);
+      LIB_DATA = {
+        products: DEFAULT_BOOKS,
+        users: [defaultAdminUser],
+        activity: [],
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(LIB_DATA));
+      } catch (_) {}
     }
 
-    // Если что-то есть – аккуратно парсим и чиним структуру, если нужно
-    try {
-      const parsed = JSON.parse(raw) || {};
-      if (!Array.isArray(parsed.products)) parsed.products = DEFAULT_BOOKS;
-      if (!Array.isArray(parsed.users)) parsed.users = [];
-      if (!Array.isArray(parsed.activity)) parsed.activity = [];
+    // нормализуем пользователей и гарантируем наличие админа
+    LIB_DATA.users = normalizeUsers(LIB_DATA.users);
+    if (!LIB_DATA.users.some((u) => u.role === "admin")) {
+      LIB_DATA.users.push(defaultAdminUser);
+    }
 
-      // гарантируем, что есть хотя бы один admin
-      if (!parsed.users.some((u) => u.role === "admin")) {
-        parsed.users.push(defaultAdminUser);
+    window.LIB_DATA = LIB_DATA;
+    window.BOOKS = LIB_DATA.products;
+    window.LIB_USERS = LIB_DATA.users;
+
+    dispatchReady();
+  }
+
+  // ---- основной путь: IndexedDB ----
+  async function initIndexedDB() {
+    try {
+      const db = await window.LibraryDB.open();
+
+      let books = await window.LibraryDB.getAll(db, "books");
+      if (!books || !books.length) {
+        const now = new Date().toISOString();
+        books = DEFAULT_BOOKS.map((b) => ({
+          ...b,
+          createdAt: now,
+          updatedAt: now,
+        }));
+        await window.LibraryDB.putMany(db, "books", books);
       }
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-      return parsed;
+      let users = await window.LibraryDB.getAll(db, "users");
+
+      if (!users || !users.length) {
+        // если вообще пусто – кладём дефолтного админа
+        users = normalizeUsers([defaultAdminUser]);
+        await window.LibraryDB.putMany(db, "users", users);
+      } else {
+        // нормализуем, чтобы были пароль/роль/даты
+        users = normalizeUsers(users);
+
+        // если нет ни одного админа – добавляем
+        if (!users.some((u) => u.role === "admin")) {
+          users.push(defaultAdminUser);
+          users = normalizeUsers(users); // чтобы у добавленного точно всё было
+          await window.LibraryDB.putMany(db, "users", users);
+        }
+      }
+
+      let activity = [];
+      try {
+        activity = await window.LibraryDB.getAll(db, "activity");
+      } catch (_) {
+        activity = [];
+      }
+
+      LIB_DATA = {
+        products: books,
+        users,
+        activity,
+      };
+
+      window.LIB_DATA = LIB_DATA;
+      window.BOOKS = books;
+      window.LIB_USERS = users;
+      window.LIB_DB = db;
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(LIB_DATA));
+      } catch (_) {}
+
+      dispatchReady();
     } catch (err) {
-      console.warn("Failed to parse digital_library_data_v1. Resetting…", err);
-      const data = createInitialData();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      return data;
+      console.warn("IndexedDB init failed, falling back to localStorage", err);
+      initLocalFallback();
     }
   }
 
-  const LIB_DATA = initLibraryData();
+  // ---- сохранение (и в localStorage, и в IndexedDB) ----
+  window.saveLibData = async function saveLibData(patch) {
+    const next = { ...LIB_DATA, ...patch };
 
-  // Глобальные “ручки”, которыми будет пользоваться остальной сайт
-  window.LIB_STORAGE_KEY = STORAGE_KEY;
-  window.LIB_DATA = LIB_DATA;        // { products, users, activity }
-  window.BOOKS = LIB_DATA.products;  // как раньше: массив книг
+    // если из patch прилетают users – нормализуем
+    if (patch.users) {
+      next.users = normalizeUsers(patch.users);
+      // гарантируем админа
+      if (!next.users.some((u) => u.role === "admin")) {
+        next.users.push(defaultAdminUser);
+        next.users = normalizeUsers(next.users);
+      }
+    }
 
-  // простая функция на будущее (будем использовать позже для регистрации и т.п.)
-  window.saveLibData = function saveLibData(patch) {
-    const data = {
-      ...LIB_DATA,
-      ...patch,
-    };
-    // обновляем ссылку LIB_DATA
-    LIB_DATA.products = data.products;
-    LIB_DATA.users = data.users;
-    LIB_DATA.activity = data.activity;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    LIB_DATA = next;
+    window.LIB_DATA = LIB_DATA;
+    window.BOOKS = LIB_DATA.products;
+    window.LIB_USERS = LIB_DATA.users;
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(LIB_DATA));
+    } catch (_) {}
+
+    if (window.LIB_DB && window.LibraryDB) {
+      const db = window.LIB_DB;
+      try {
+        if (patch.products) {
+          await window.LibraryDB.clearStore(db, "books");
+          await window.LibraryDB.putMany(db, "books", patch.products);
+        }
+        if (patch.users) {
+          await window.LibraryDB.clearStore(db, "users");
+          await window.LibraryDB.putMany(db, "users", LIB_DATA.users);
+        }
+        if (patch.activity) {
+          await window.LibraryDB.clearStore(db, "activity");
+          await window.LibraryDB.putMany(db, "activity", patch.activity);
+        }
+      } catch (e) {
+        console.warn("Failed to sync changes to IndexedDB", e);
+      }
+    }
   };
-})(window);
 
+  if ("indexedDB" in window && window.LibraryDB) {
+    initIndexedDB();
+  } else {
+    initLocalFallback();
+  }
+})(window);

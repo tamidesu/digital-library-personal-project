@@ -21,7 +21,7 @@
     <!-- "2024-01-01T00:00:03" -->
      <!-- "2025-11-29T00:00:00" -->
       <!-- data-countdown="2025-01-01T00:00:10" -->
-    <section class="bf-promo reveal" data-countdown="2024-01-01T00:00:03">
+    <section class="bf-promo reveal" data-countdown="2025-12-04T16:29:50">
       <div class="bfp-content">
 
         <div class="bfp-left">
@@ -76,76 +76,7 @@
     <!-- Catalog -->
     <section class="catalog" aria-label="Product list">
       <div class="grid" id="products-grid">
-        <!-- Каждая карточка имеет data-genre / data-price и кнопку add-to-cart -->
-        <article class="card product" data-genre="fiction" data-price="14.99" data-id="the-great-library">
-          <div class="bf-sticker" hidden>Black Friday -30%</div>
-          <figure class="card-media">
-            <img src="assets/images/book-1.png" alt="The Great Library — cover" loading="lazy" decoding="async" />
-          </figure>
-          <h3 class="card-title">The Great Library</h3>
-          <p class="card-meta">A modern classic about knowledge and power.</p>
-          <p class="price">$14.99</p>
-          <button class="btn-buy" data-add="the-great-library">Add to Cart</button>
-          <a href="details.html?book=the-great-library" class="btn-details">Details</a>
-          
-        </article>
-
-        <article class="card product" data-genre="design" data-price="24.00" data-id="designing-uis">
-          <div class="bf-sticker" hidden>Black Friday -30%</div>
-          <figure class="card-media">
-            <img src="assets/images/book-2.png" alt="Designing UIs — cover" loading="lazy" decoding="async" />
-          </figure>
-          <h3 class="card-title">Designing UIs</h3>
-          <p class="card-meta">Practical patterns for better interfaces.</p>
-          <p class="price">$24.00</p>
-          <button class="btn-buy" data-add="designing-uis">Add to Cart</button>
-          <a href="details.html?book=designing-uis" class="btn-details">Details</a>
-        </article>
-
-        <article class="card product" data-genre="data" data-price="18.50" data-id="data-stories">
-          <figure class="card-media">
-            <img src="assets/images/book-3.png" alt="Data Stories — cover" loading="lazy" decoding="async" />
-          </figure>
-          <h3 class="card-title">Data Stories</h3>
-          <p class="card-meta">Make data speak with narrative visuals.</p>
-          <p class="price">$18.50</p>
-          <button class="btn-buy" data-add="data-stories">Add to Cart</button>
-          <a href="details.html?book=data-stories" class="btn-details">Details</a>
-        </article>
-
-        <article class="card product" data-genre="programming" data-price="29.99" data-id="clean-code">
-          <figure class="card-media">
-            <img src="assets/images/book-4.png" alt="Clean Code — cover" loading="lazy" decoding="async" />
-          </figure>
-          <h3 class="card-title">Clean Code</h3>
-          <p class="card-meta">Timeless practices for writing better code.</p>
-          <p class="price">$29.99</p>
-          <button class="btn-buy" data-add="clean-code">Add to Cart</button>
-          <a href="details.html?book=clean-code" class="btn-details">Details</a>
-        </article>
-
-        <article class="card product" data-genre="philosophy" data-price="17.00" data-id="the-algorithmic-mind">
-          <div class="bf-sticker" hidden>Black Friday -30%</div>
-          <figure class="card-media">
-            <img src="assets/images/book-5.png" alt="The Algorithmic Mind — cover" loading="lazy" decoding="async" />
-          </figure>
-          <h3 class="card-title">The Algorithmic Mind</h3>
-          <p class="card-meta">How algorithms shape decisions.</p>
-          <p class="price">$17.00</p>
-          <button class="btn-buy" data-add="the-algorithmic-mind">Add to Cart</button>
-          <a href="details.html?book=the-algorithmic-mind" class="btn-details">Details</a>
-        </article>
-
-        <article class="card product" data-genre="design" data-price="21.00" data-id="minimal-design">
-          <figure class="card-media">
-            <img src="assets/images/book-6.png" alt="Minimal Design — cover" loading="lazy" decoding="async" />
-          </figure>
-          <h3 class="card-title">Minimal Design</h3>
-          <p class="card-meta">Less, but better — design thinking.</p>
-          <p class="price">$21.00</p>
-          <button class="btn-buy" data-add="minimal-design">Add to Cart</button>
-          <a href="details.html?book=minimal-design" class="btn-details">Details</a>
-        </article>
+        <!-- Cards are rendered dynamically from js/products.js -->
       </div>
     </section>
   </main>
@@ -156,7 +87,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/includes.js"></script>
+  <script src="js/db.js"></script>
   <script src="js/books-data.js"></script>
+  <script src="js/auth-core.js"></script>
+  <script src="js/auth-ui.js"></script>
   <script src="js/products.js"></script>
   <script src="js/floating-cart.js"></script>
   <script src="js/main.js"></script>

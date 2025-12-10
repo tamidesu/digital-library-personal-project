@@ -9,7 +9,57 @@
         <li><a class="text-decoration-none" href="index.html#genres">Genres</a></li>
         <li><a class="text-decoration-none" href="index.html#about">About</a></li>
       </ul>
-      <a class="btn-register text-decoration-none" href="register.html">Register</a>
+      <!-- <a class="btn-register text-decoration-none" href="register.html">Register</a> -->
+      <div class="header-auth" id="headerAuth"></div>
+
+      
     </nav>
   </div>
 </header>
+
+<!-- Auth Modals -->
+<div class="auth-modal" id="loginModal" hidden>
+  <div class="auth-modal-inner">
+    <h2 class="auth-title">Sign in</h2>
+    <form id="loginForm" class="auth-form">
+      <label class="auth-field">
+        <span>Email</span>
+        <input type="email" name="email" required />
+      </label>
+      <label class="auth-field">
+        <span>Password</span>
+        <input type="password" name="password" required />
+      </label>
+      <p class="auth-error" id="loginError"></p>
+      <div class="auth-actions">
+        <button type="button" class="btn-auth-cancel btn-link auth-close">Cancel</button>
+        <button type="submit" class="btn-auth-submit btn-primary">Login</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="auth-modal" id="registerModal" hidden>
+  <div class="auth-modal-inner">
+    <h2 class="auth-title">Create account</h2>
+    <form id="registerForm" class="auth-form">
+      <label class="auth-field">
+        <span>Name</span>
+        <input type="text" name="name" required />
+      </label>
+      <label class="auth-field">
+        <span>Email</span>
+        <input type="email" name="email" required />
+      </label>
+      <label class="auth-field">
+        <span>Password</span>
+        <input type="password" name="password" required minlength="4" />
+      </label>
+      <p class="auth-error" id="registerError"></p>
+      <div class="auth-actions">
+        <button type="button" class="btn-auth-cancel btn-link auth-close">Cancel</button>
+        <button type="submit" class="btn-auth-submit btn-primary">Sign up</button>
+      </div>
+    </form>
+  </div>
+</div>

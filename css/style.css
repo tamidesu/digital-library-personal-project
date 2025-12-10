@@ -575,3 +575,376 @@ html[data-theme] *{
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ===== Auth modals ===== */
+
+.auth-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 5, 20, 0.78);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out;
+}
+
+.auth-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.auth-modal-inner {
+  width: 100%;
+  max-width: 420px;
+  background: radial-gradient(circle at top, #26144d 0, #070716 60%);
+  border-radius: 18px;
+  padding: 24px 22px 20px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(160, 120, 255, 0.5);
+}
+
+.auth-title {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+  color: #ffffff;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-field span {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  color: rgba(220, 220, 255, 0.8);
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(150, 150, 255, 0.4);
+  background: rgba(6, 8, 20, 0.9);
+  color: #fff;
+}
+
+.auth-field input:focus {
+  outline: none;
+  border-color: #8f6bff;
+  box-shadow: 0 0 0 1px rgba(143, 107, 255, 0.4);
+}
+
+.auth-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.auth-error {
+  min-height: 18px;
+  font-size: 0.8rem;
+  color: #ff6b81;
+}
+
+.header-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* ===== Header auth area ===== */
+
+.header-auth {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* текстовые ссылки Login / Logout / Admin Panel */
+.header-login-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280; /* спокойный серо-синий */
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.header-login-link:hover {
+  color: #a855f7; /* тот же фиолетовый, что в остальном UI */
+}
+
+/* делаем .btn-register красивой капсулой и для <button>, и для <a> */
+.btn-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  box-shadow: 0 8px 25px rgba(88, 28, 135, 0.35);
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-register:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(88, 28, 135, 0.5);
+}
+
+.btn-register:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(88, 28, 135, 0.35);
+}
+
+/* ===== Modal Actions Layout (Контейнер кнопок) ===== */
+.auth-actions {
+  display: flex;
+  /* Изменено: space-between раздвинет кнопки по разным краям */
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px; /* Немного увеличил отступ сверху для "воздуха" */
+  width: 100%;
+}
+
+.btn-auth-submit {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 20px; /* Чуть больше кнопка */
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px; /* Более современные скругления */
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -4px rgba(124, 58, 237, 0.5); /* Красивая тень */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-auth-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px -8px rgba(124, 58, 237, 0.7);
+  filter: brightness(1.1);
+}
+
+.btn-auth-submit:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px -4px rgba(124, 58, 237, 0.5);
+}
+
+.btn-auth-cancel {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  color: #94a3b8; /* Спокойный серо-голубой цвет */
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none; /* Гарантированно убирает подчеркивание */
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-auth-cancel:hover {
+  color: #ffffff; /* При наведении текст белеет */
+  background: rgba(255, 255, 255, 0.05); /* Легкая подсветка фона */
+}
+
+/* Контейнер в шапке */
+.header-auth {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Отступ между кнопками */
+}
+/* Кнопка-пузырек (Ghost) для светлого фона */
+.header-login-link {
+  background: transparent;
+  /* Используем твой акцентный цвет для рамки, а не белый */
+  border: 1px solid #6366f1; 
+  border-radius: 999px;
+  
+  cursor: pointer;
+  /* Увеличим отступы, чтобы пузырек был "пухлым" */
+  padding: 10px 20px;
+  
+  font-size: 0.9rem;
+  font-weight: 600; /* Чуть жирнее текст */
+  
+  /* Цвет текста тоже акцентный, чтобы читался на белом */
+  color: #6366f1; 
+  text-decoration: none;
+  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Эффект при наведении: заливаем пузырек цветом */
+.header-login-link:hover {
+  background: #6366f1; /* Фон становится синим */
+  color: #ffffff;      /* Текст становится белым */
+  
+  /* Добавляем вкусную тень */
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  transform: translateY(-1px);
+}
+
+.header-login-link:active {
+  transform: translateY(0);
+}
+.btn-register {
+  /* Фирменный градиент */
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+  color: #ffffff !important;
+  
+  border: none;
+  /* Полностью скругленная капсула */
+  border-radius: 9999px; 
+  padding: 10px 28px;
+  
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  
+  /* Эффекты и анимация */
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important; /* Неоновая тень */
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-register:hover {
+  transform: translateY(-2px); /* Взлетает */
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6) !important; /* Тень становится ярче */
+  filter: brightness(1.1);
+}
+
+.btn-register:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.35) !important;
+}
+
+.header-user {
+  font-size: 0.9rem;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* круглая иконка с инициалом пользователя */
+.header-user-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(88, 28, 135, 0.45);
+  margin-left: 0.15rem;
+}
+
+/* Контейнер в шапке */
+.header-auth {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Обертка профиля (Текст + Аватар) */
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px 4px 12px;
+  /* Легкий фон, объединяющий имя и аватар */
+  background: rgba(99, 102, 241, 0.06); 
+  border-radius: 999px;
+  border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+/* Блок с текстом */
+.user-text-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Выравнивание текста вправо */
+  line-height: 1.1;
+}
+
+.greeting-text {
+  font-size: 0.7rem;
+  color: #64748b; /* Светло-серый */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.username-text {
+  font-size: 0.9rem;
+  color: #1e293b; /* Темный, почти черный (для контраста) */
+  font-weight: 700;
+}
+
+/* Аватарка (Кружок) */
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  
+  /* Градиентный фон */
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  color: #ffffff;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+/* Кнопка Logout (Минималистичная иконка) */
+.btn-logout {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8; /* Серый цвет иконки */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+  color: #ef4444; /* Красный при наведении (опасное действие) */
+  background: rgba(239, 68, 68, 0.1);
+}

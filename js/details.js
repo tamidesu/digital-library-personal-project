@@ -1,48 +1,45 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const bookId = params.get("book");
-  const section = document.getElementById("book-section");
+function renderBookDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const bookId = params.get("book");
+    const section = document.getElementById("book-section");
+    if (!section) return;
 
-  const book = (window.ProductRepository && window.ProductRepository.byId(bookId))
-             || (window.BOOKS || []).find(b => b.id === bookId);
+    const book =
+        (window.ProductRepository && window.ProductRepository.byId(bookId)) ||
+        (window.BOOKS || []).find((b) => b.id === bookId);
 
-  if (!book) {
-    section.innerHTML = `
+    if (!book) {
+        section.innerHTML = `
       <div class="text-center py-5">
         <h2 class="text-danger">Book not found</h2>
         <a href="products.html" class="btn-back mt-3">← Back to Catalog</a>
       </div>`;
-    return;
-  }
+        return;
+    }
 
-  // ===============================
-  // 💰 BLACK FRIDAY PRICE LOGIC
-  // ===============================
-  let priceHTML = `<p class="price-tag">$${book.price.toFixed(2)}</p>`;
-  let bfRibbon = "";
-  
-  if (book.bfDeal) {
-      const discount = Math.round(book.bfDiscount * 100);
-      const newPrice = (book.price * (1 - book.bfDiscount)).toFixed(2);
+    // ===== BLACK FRIDAY PRICE LOGIC (оставляем как был) =====
+    let priceHTML = `<p class="price-tag">$${book.price.toFixed(2)}</p>`;
+    let bfRibbon = "";
 
-      priceHTML = `
-        <div class="bf-price-box">
-            <span class="old-price">$${book.price.toFixed(2)}</span>
-            <span class="new-price">$${newPrice}</span>
-        </div>
-      `;
+    if (book.bfDeal) {
+        const discount = Math.round(book.bfDiscount * 100);
+        const newPrice = (book.price * (1 - book.bfDiscount)).toFixed(2);
 
-      bfRibbon = `
-        <div class="bf-sticker-details">
-          Black Friday -${discount}%
-        </div>
-      `;
-  }
+        priceHTML = `
+      <div class="bf-price-box">
+        <span class="old-price">$${book.price.toFixed(2)}</span>
+        <span class="new-price">$${newPrice}</span>
+      </div>
+    `;
 
-  // ===============================
-  // TEMPLATE
-  // ===============================
-  section.innerHTML = `
+        bfRibbon = `
+      <div class="bf-sticker-details">
+        Black Friday -${discount}%
+      </div>
+    `;
+    }
+
+    section.innerHTML = `
     <div class="book-container">
       <div class="row g-5 align-items-center">
 
@@ -76,17 +73,28 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `;
 
-  // Add to cart button
-  document.getElementById('addFromDetails')?.addEventListener('click', () => {
-    window.Cart.add(book, 1);
-    const toast = document.createElement('div');
-    toast.className = 'cart-toast';
-    toast.textContent = `Added: ${book.title}`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 300);
-    }, 2000);
-  });
+    document.getElementById("addFromDetails")?.addEventListener("click", () => {
+        window.Cart.add(book, 1);
+        const toast = document.createElement("div");
+        toast.className = "cart-toast";
+        toast.textContent = `Added: ${book.title}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add("show"), 10);
+        setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    });
+}
+
+// 1) пробуем отрендерить, когда DOM готов
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.BOOKS && window.BOOKS.length) {
+        renderBookDetails();
+    }
+});
+
+// 2) если данные из БД придут позже – дождёмся события
+document.addEventListener("data:ready", () => {
+    renderBookDetails();
 });
