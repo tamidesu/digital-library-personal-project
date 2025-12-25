@@ -1,0 +1,388 @@
+.purchases-page{
+  padding-top: 2.5rem;
+  padding-bottom: 4rem;
+}
+
+.p-hero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 22px;
+}
+
+.p-hero__left{
+  display:flex;
+  align-items:center;
+  gap: 14px;
+}
+
+.p-hero__icon{
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display:grid;
+  place-items:center;
+  color: rgba(255,255,255,.95);
+  background: radial-gradient(circle at 30% 20%, rgba(99,102,241,.90), rgba(168,85,247,.60));
+  box-shadow: 0 18px 55px rgba(99,102,241,.22);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.p-title{
+  margin:0;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+}
+.p-sub{
+  margin: 6px 0 0;
+  color: rgba(255,255,255,.72);
+  max-width: 620px;
+}
+
+.p-hero__right{
+  display:flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content:flex-end;
+}
+
+.p-stat{
+  min-width: 160px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
+}
+.p-stat .label{
+  color: rgba(255,255,255,.62);
+  font-size: .85rem;
+}
+.p-stat .value{
+  margin-top: 4px;
+  font-weight: 900;
+  color: rgba(255,255,255,.92);
+}
+
+.p-controls{
+  padding: 16px;
+  border-radius: 22px;
+}
+
+.btn-glass{
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.92);
+  backdrop-filter: blur(12px);
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.btn-glass:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.18);
+}
+
+.p-cards{
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Order card */
+.o-card{
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.22);
+}
+
+.o-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.o-left{
+  display:flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.o-id{
+  font-weight: 900;
+  color: rgba(255,255,255,.94);
+  letter-spacing: .02em;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  min-width: 0;
+}
+.o-id .mono{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  opacity: .95;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.o-meta{
+  color: rgba(255,255,255,.65);
+  font-size: .92rem;
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge-status{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: .82rem;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.88);
+}
+.badge-status::before{
+  content:"";
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(255,255,255,.45);
+  box-shadow: 0 0 0 3px rgba(255,255,255,.08);
+}
+
+.badge-paid{ border-color: rgba(99,102,241,.30); background: rgba(99,102,241,.12); }
+.badge-paid::before{ background: rgba(139,92,246,.95); }
+
+.badge-pending{ border-color: rgba(96,165,250,.28); background: rgba(96,165,250,.10); }
+.badge-pending::before{ background: rgba(96,165,250,.95); }
+
+.badge-refunded{ border-color: rgba(255,180,180,.28); background: rgba(255,180,180,.10); }
+.badge-refunded::before{ background: rgba(255,180,180,.95); }
+
+.badge-cancelled{ border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.05); }
+.badge-cancelled::before{ background: rgba(255,255,255,.55); }
+
+.o-right{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+.o-total{
+  font-weight: 900;
+  color: rgba(255,255,255,.92);
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.o-toggle{
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(139,92,246,.28);
+  background: linear-gradient(90deg, rgba(99,102,241,.85), rgba(168,85,247,.78));
+  color: rgba(255,255,255,.95);
+  font-weight: 900;
+  display:inline-flex;
+  align-items:center;
+  gap: 10px;
+  transition: transform .18s ease, filter .18s ease;
+}
+.o-toggle:hover{ transform: translateY(-1px); filter: brightness(1.06); }
+
+.o-toggle svg{ transition: transform .18s ease; }
+.o-card.is-open .o-toggle svg{ transform: rotate(180deg); }
+
+/* Expand area */
+.o-body{
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 0 16px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height .22s ease, opacity .20s ease, padding .18s ease;
+}
+.o-card.is-open .o-body{
+  padding: 14px 16px 16px;
+  opacity: 1;
+  max-height: 900px;
+}
+
+.o-sum{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.o-chip{
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
+}
+.o-chip .k{ color: rgba(255,255,255,.62); font-size: .85rem; }
+.o-chip .v{ margin-top: 4px; font-weight: 900; color: rgba(255,255,255,.92); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+.o-items{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.i-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.i-left{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  min-width: 0;
+}
+.i-cover{
+  width: 44px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+}
+.i-title{
+  font-weight: 900;
+  color: rgba(255,255,255,.92);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  max-width: 420px;
+}
+.i-meta{
+  color: rgba(255,255,255,.65);
+  font-size: .9rem;
+}
+
+.i-right{
+  display:flex;
+  gap: 12px;
+  align-items:baseline;
+  flex-wrap: wrap;
+  justify-content:flex-end;
+  text-align:right;
+}
+.i-pill{
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+  color: rgba(255,255,255,.88);
+  font-weight: 800;
+  font-size: .85rem;
+}
+
+/* Skeleton + empty */
+.p-skeleton{
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sk-card{
+  height: 82px;
+  border-radius: 22px;
+  background: linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.09), rgba(255,255,255,.05));
+  background-size: 240% 100%;
+  border: 1px solid rgba(255,255,255,.08);
+  animation: shimmer 1.2s ease infinite;
+}
+@keyframes shimmer{
+  0%{ background-position: 0% 0; }
+  100%{ background-position: 100% 0; }
+}
+
+.p-empty{
+  padding: 22px;
+  border-radius: 22px;
+  text-align: center;
+}
+.p-empty__title{
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: rgba(255,255,255,.94);
+}
+.p-empty__text{
+  margin-top: 8px;
+  color: rgba(255,255,255,.70);
+}
+
+@media (max-width: 992px){
+  .p-hero{ flex-direction: column; align-items:flex-start; }
+  .p-hero__right{ justify-content:flex-start; }
+  .o-head{ flex-direction: column; align-items:flex-start; }
+  .o-right{ width:100%; justify-content:space-between; }
+  .i-title{ max-width: 240px; }
+}
+
+/* Purchases: Back button polish */
+.p-controls .btn-back{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  height:44px;
+  padding:0 16px;
+  border-radius:14px;
+
+  text-decoration:none;
+  color: rgba(255,255,255,.92);
+
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(12px);
+
+  transition: transform .18s ease, background .18s ease, border-color .18s ease, filter .18s ease;
+}
+
+.p-controls .btn-back:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.18);
+  text-decoration:none;
+}
+
+.p-controls .btn-back:active{
+  transform: translateY(0);
+  filter: brightness(.98);
+}
+
+.p-controls .btn-back:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(139,92,246,.28);
+}
+
+.p-controls .btn-back::before{
+  content:"←";
+  opacity: .9;
+  font-weight: 900;
+}
