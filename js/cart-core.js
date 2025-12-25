@@ -45,10 +45,8 @@
       const existing = this.find(product.id);
       if (existing) existing.qty += qty;
       else {
-        if (product.bfDeal) {
-            product.price = product.price * (1 - product.bfDiscount);
-        }
-        this.items.push(new CartItem({ id: product.id, title: product.title, price: product.price, cover: product.cover, qty }));
+        const finalPrice = product.bfDeal ? product.price * (1 - product.bfDiscount) : product.price;
+        this.items.push(new CartItem({ id: product.id, title: product.title, price: finalPrice, cover: product.cover, qty }));
       }
       this.persist();
     }

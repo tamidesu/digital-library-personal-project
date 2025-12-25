@@ -704,3 +704,55 @@ body.bf-ended .bf-label {
     opacity: 0;
     transform: translateY(-20px);
 }
+
+/* products.css */
+.card.product.hide {
+  display: none !important;
+}
+
+/* products.css */
+#products-grid.grid {
+  display: grid;
+  gap: 26px;
+  grid-template-columns: repeat(auto-fill, 320px); /* фикс ширина карточки */
+  justify-content: center; /* если карточек мало — стоят по центру */
+  align-items: start;
+}
+
+/* фиксируем саму карточку */
+.card.product {
+  width: 320px;
+  max-width: 320px;
+}
+
+.card.product {
+  display: flex;
+  flex-direction: column;
+}
+
+.card.product .card-media {
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card.product .card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.card.product .card-meta {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;       /* максимум 3 строки */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 3.9em;           /* чтобы карточки были ровнее */
+}
+
+/* кнопки всегда “внизу” */
+.card.product .price {
+  margin-top: auto;
+}
+

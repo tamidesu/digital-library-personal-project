@@ -1,5 +1,5 @@
 // js/products.js
-// Динамический рендер каталога из window.BOOKS + все эффекты/фильтры/Black Friday
+// Render catalog from IndexedDB-loaded window.BOOKS + filters
 
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
@@ -8,20 +8,98 @@ document.addEventListener("DOMContentLoaded", () => {
   const priceValue = document.getElementById("priceValue");
   const grid = document.getElementById("products-grid");
 
-  if (priceValue && priceRange) {
+  let cards = [];
+  let ALL_BOOKS = [];
+
+  function normalizeGenreKey(v) {
+    return String(v || "").trim().toLowerCase();
+  }
+
+  function genreLabel(key) {
+    // "data_science" -> "Data Science", "programming" -> "Programming"
+    return normalizeGenreKey(key)
+      .replace(/[_-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/\b\w/g, (c) => c.toUpperCase()) || "Other";
+  }
+
+  function roundUpTo(n, step) {
+    return Math.ceil(n / step) * step;
+  }
+
+  function computePriceMax(books) {
+    const prices = (books || [])
+      .map((b) => Number(b?.price ?? 0))
+      .filter((x) => Number.isFinite(x) && x >= 0);
+
+    const max = prices.length ? Math.max(...prices) : 0;
+
+    // You asked: “not up to points” -> integer slider, but price can be decimals.
+    // So we round the MAX up nicely.
+    return roundUpTo(Math.ceil(max), 5) || 50;
+  }
+
+  function rebuildGenreOptions(books, preserveValue = true) {
+    if (!genreSelect) return;
+
+    const prev = preserveValue ? String(genreSelect.value || "") : "";
+
+    const set = new Set();
+    (books || []).forEach((b) => {
+      const g = normalizeGenreKey(b?.genre ?? b?.category);
+      if (g) set.add(g);
+    });
+
+    const genres = Array.from(set).sort((a, b) => a.localeCompare(b));
+
+    // Rebuild <select> safely
+    genreSelect.innerHTML = "";
+    const optAll = document.createElement("option");
+    optAll.value = "";
+    optAll.textContent = "All genres";
+    genreSelect.appendChild(optAll);
+
+    for (const g of genres) {
+      const opt = document.createElement("option");
+      opt.value = g;
+      opt.textContent = genreLabel(g);
+      genreSelect.appendChild(opt);
+    }
+
+    // Restore selection if possible
+    if (preserveValue) {
+      const exists = Array.from(genreSelect.options).some((o) => o.value === prev);
+      genreSelect.value = exists ? prev : "";
+    }
+  }
+
+  function rebuildPriceRange(books, preserveValue = true) {
+    if (!priceRange || !priceValue) return;
+
+    const prev = preserveValue ? Number(priceRange.value) : null;
+
+    const max = computePriceMax(books);
+
+    priceRange.min = "0";
+    priceRange.max = String(max);
+    priceRange.step = "1";
+
+    // Keep current selection if it still fits, otherwise clamp
+    const nextVal = preserveValue && Number.isFinite(prev) ? Math.min(prev, max) : max;
+    priceRange.value = String(nextVal);
     priceValue.textContent = `$${priceRange.value}`;
   }
 
-  const urlParams = new URLSearchParams(location.search);
-  if (urlParams.has("q") && searchInput) searchInput.value = urlParams.get("q") || "";
-  if (urlParams.has("genre") && genreSelect) genreSelect.value = urlParams.get("genre") || "";
-  if (urlParams.has("max") && priceRange) {
-    priceRange.value = urlParams.get("max") || priceRange.value;
-    if (priceValue) priceValue.textContent = `$${priceRange.value}`;
+  function rebuildFiltersFromData(books, preserve = true) {
+    rebuildGenreOptions(books, preserve);
+    rebuildPriceRange(books, preserve);
   }
 
-  let cards = [];
 
+  // -------------------------
+  // URL helpers
+  // -------------------------
   function setURL(q, g, m) {
     const p = new URLSearchParams(location.search);
     q ? p.set("q", q) : p.delete("q");
@@ -30,29 +108,19 @@ document.addEventListener("DOMContentLoaded", () => {
     history.replaceState(null, "", `${location.pathname}?${p.toString()}`);
   }
 
-  function applyFilter() {
-    if (!cards.length) return;
-
-    const q = (searchInput?.value || "").toLowerCase().trim();
-    const g = genreSelect?.value || "";
-    const m = parseFloat(priceRange?.value || "999");
-
-    cards.forEach((c) => {
-      const title = c.querySelector(".card-title")?.textContent.toLowerCase() || "";
-      const genre = c.dataset.genre || "";
-      const price = parseFloat(c.dataset.price || "0");
-
-      const match = title.includes(q) && (!g || genre === g) && price <= m;
-      if (match) {
-        c.classList.remove("hide");
-      } else {
-        c.classList.add("hide");
-      }
-    });
-
-    setURL(q, g, String(m));
+  function initFiltersFromURL() {
+    const urlParams = new URLSearchParams(location.search);
+    if (urlParams.has("q") && searchInput) searchInput.value = urlParams.get("q") || "";
+    if (urlParams.has("genre") && genreSelect) genreSelect.value = urlParams.get("genre") || "";
+    if (urlParams.has("max") && priceRange) {
+      priceRange.value = urlParams.get("max") || priceRange.value;
+    }
+    if (priceValue && priceRange) priceValue.textContent = `$${priceRange.value}`;
   }
 
+  // -------------------------
+  // Debounce
+  // -------------------------
   const debounce = (fn, d = 250) => {
     let t;
     return (...args) => {
@@ -61,17 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   };
 
-  const runFilter = debounce(applyFilter, 200);
-
-  searchInput?.addEventListener("input", runFilter);
-  genreSelect?.addEventListener("change", runFilter);
-  priceRange?.addEventListener("input", () => {
-    if (priceValue) priceValue.textContent = `$${priceRange.value}`;
-    runFilter();
-  });
-
   // -------------------------
-  //  Hover light (градиент)
+  // Effects
   // -------------------------
   function initHoverLight() {
     cards.forEach((card) => {
@@ -83,9 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // -------------------------
-  //  3D tilt эффект
-  // -------------------------
   function initTiltEffect() {
     const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 
@@ -116,9 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // -------------------------
-  //  Анимация появления
-  // -------------------------
   function initIntersectionAnimation() {
     if (!("IntersectionObserver" in window) || !cards.length) {
       cards.forEach((c) => c.classList.add("in-view"));
@@ -138,50 +191,56 @@ document.addEventListener("DOMContentLoaded", () => {
     cards.forEach((c) => io.observe(c));
   }
 
-  // -------------------------
-  //  Black Friday визуал
-  // -------------------------
   function applyBlackFridayVisuals() {
-    if (!window.BOOKS) return;
-
     cards.forEach((card) => {
       const id = card.getAttribute("data-id");
-      if (!id) return;
-
-      const book = window.BOOKS.find((b) => b.id === id);
-      if (!book || !book.bfDeal) return;
+      const book = ALL_BOOKS.find((b) => b.id === id);
+      if (!book) return;
 
       const sticker = card.querySelector(".bf-sticker");
       const priceEl = card.querySelector(".price");
 
+      const basePrice = Number(book.price || 0);
+      const discount = Number(book.bfDiscount || 0);
+
+      const hasDeal = Boolean(book.bfDeal) && discount > 0;
+
+      // 1) Если BF НЕ активен — полностью очищаем BF-визуал
+      if (!hasDeal) {
+        if (sticker) sticker.hidden = true;
+        if (priceEl) priceEl.textContent = `$${basePrice.toFixed(2)}`;
+        return;
+      }
+
+      // 2) BF активен — рисуем old/new
       if (sticker) {
-        const discount = Math.round((book.bfDiscount || 0) * 100);
         sticker.hidden = false;
-        sticker.textContent = `Black Friday -${discount}%`;
+        sticker.textContent = `Black Friday -${Math.round(discount * 100)}%`;
       }
 
       if (priceEl) {
-        const basePrice = Number(book.price || 0);
-        const discounted = (basePrice * (1 - (book.bfDiscount || 0))).toFixed(2);
+        const discounted = basePrice * (1 - discount);
         priceEl.innerHTML = `
           <span class="old-price">$${basePrice.toFixed(2)}</span>
-          <span class="new-price">$${discounted}</span>
+          <span class="new-price">$${discounted.toFixed(2)}</span>
         `;
       }
     });
   }
 
+
   // -------------------------
-  //  Рендер карточек из BOOKS
+  // Render
   // -------------------------
   function createCardHTML(book) {
     const basePrice = Number(book.price || 0);
     const priceText = basePrice.toFixed(2);
     const meta = book.shortDescription || book.description || "";
+    const genre = String(book.genre || "").trim().toLowerCase();
 
     return `
       <article class="card product"
-               data-genre="${book.genre || ""}"
+               data-genre="${genre}"
                data-price="${priceText}"
                data-id="${book.id}">
         <div class="bf-sticker" hidden>Black Friday</div>
@@ -200,22 +259,52 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
-  function renderProductsFromBooks() {
-    if (!grid || !window.BOOKS) return;
-
-    const books = window.BOOKS;
-    grid.innerHTML = books.map(createCardHTML).join("");
+  function renderBooks(list) {
+    if (!grid) return;
+    grid.innerHTML = (list || []).map(createCardHTML).join("");
     cards = [...grid.querySelectorAll(".product")];
 
     initHoverLight();
     initTiltEffect();
     initIntersectionAnimation();
-    applyFilter();
     applyBlackFridayVisuals();
   }
 
   // -------------------------
-  //  Клик по "Add to Cart" + pop-анимация
+  // Filter by DATA (IndexedDB books)
+  // -------------------------
+  function getFilterState() {
+    const q = (searchInput?.value || "").toLowerCase().trim();
+    const g = String(genreSelect?.value || "").trim().toLowerCase();
+    const m = parseFloat(priceRange?.value || "999");
+    return { q, g, m };
+  }
+
+  function applyAndRender() {
+    const { q, g, m } = getFilterState();
+
+    const filtered = (ALL_BOOKS || []).filter((b) => {
+      const title = String(b.title || "").toLowerCase();
+      const genre = String(b.genre || "").trim().toLowerCase();
+      const price = Number(b.price || 0);
+      return title.includes(q) && (!g || genre === g) && price <= m;
+    });
+
+    setURL(q, g, String(m));
+    renderBooks(filtered);
+  }
+
+  const runFilter = debounce(() => {
+    if (priceValue && priceRange) priceValue.textContent = `$${priceRange.value}`;
+    applyAndRender();
+  }, 200);
+
+  searchInput?.addEventListener("input", runFilter);
+  genreSelect?.addEventListener("change", runFilter);
+  priceRange?.addEventListener("input", runFilter);
+
+  // -------------------------
+  // Add to cart (delegation stays the same)
   // -------------------------
   if (grid) {
     grid.addEventListener("click", (e) => {
@@ -225,7 +314,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = btn.getAttribute("data-add");
       if (!id) return;
 
-      // pop-анимация
       btn.classList.remove("pop");
       void btn.offsetWidth;
       btn.classList.add("pop");
@@ -248,112 +336,39 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => toast.remove(), 300);
       }, 2000);
 
-      if (window.Cart) {
-        window.dispatchEvent(new CustomEvent("cart:updated"));
-      }
+      window.dispatchEvent(new CustomEvent("cart:updated"));
     });
   }
 
   // -------------------------
-  //  Старт: ждём данные из БД
+  // Init when data ready
   // -------------------------
-  function onDataReady() {
-    renderProductsFromBooks();
-    if (window.Cart) {
-      window.dispatchEvent(new CustomEvent("cart:updated"));
-    }
+  function bootFromBooks() {
+    ALL_BOOKS = (Array.isArray(window.BOOKS) ? window.BOOKS : [])
+                    .filter((b) => String(b?.status ?? "active") === "active");
+    
+    rebuildFiltersFromData(ALL_BOOKS, false);
+    initFiltersFromURL();
+    applyAndRender();
+    window.dispatchEvent(new CustomEvent("cart:updated"));
   }
 
   if (window.BOOKS && window.BOOKS.length) {
-    onDataReady();
+    bootFromBooks();
   } else {
-    document.addEventListener("data:ready", () => {
-      onDataReady();
-    }, { once: true });
+    document.addEventListener("data:ready", bootFromBooks, { once: true });
   }
+
+  // If books updated from another tab/admin (BroadcastChannel -> books:updated)
+  document.addEventListener("books:updated", (e) => {
+    ALL_BOOKS = Array.isArray(e.detail) ? e.detail : (window.BOOKS || []);
+    ALL_BOOKS = (ALL_BOOKS || []).filter((b) => String(b?.status ?? "active") === "active");
+
+    rebuildFiltersFromData(ALL_BOOKS, true);
+    applyAndRender();
+  });
 });
 
-
-// =======================================
-//  Black Friday: окончание акции & баннер
-// =======================================
-(() => {
-  let bfCleaned = false;
-
-  function finalizeBlackFridayUI() {
-  // 1) Вырубаем флаги скидок в данных И сохраняем
-    if (window.LIB_DATA && window.saveLibData) {
-      const updatedProducts = (window.LIB_DATA.products || []).map(p => ({
-        ...p,
-        bfDeal: true,
-        bfDiscount: 0
-      }));
-
-      window.LIB_DATA.products = updatedProducts;
-      window.BOOKS = updatedProducts;           // чтобы фронт работал как раньше
-      window.saveLibData({ products: updatedProducts });
-    } else if (window.BOOKS) {
-      // fallback, если вдруг LIB_DATA нет
-      window.BOOKS.forEach(b => {
-        b.bfDeal = false;
-        b.bfDiscount = 0;
-      });
-    }
-
-    // 2) Чистим DOM-карточки
-    document.querySelectorAll(".card.product").forEach((card) => {
-      const sticker = card.querySelector(".bf-sticker");
-      const priceEl = card.querySelector(".price");
-
-      if (sticker) {
-        sticker.hidden = true;
-      }
-
-      if (priceEl) {
-        const base = parseFloat(card.dataset.price || "0");
-        if (!isNaN(base) && base > 0) {
-          // перезаписываем целиком -> old/new span-ы исчезнут
-          priceEl.textContent = `$${base.toFixed(2)}`;
-        }
-      }
-    });
-  }
-
-  document.addEventListener("bf:tick", (e) => {
-    const t = e.detail;
-    const box = document.querySelector(".bfp-timer");
-    if (box) {
-      const d = document.querySelector("[data-prod-days]");
-      const h = document.querySelector("[data-prod-hours]");
-      const m = document.querySelector("[data-prod-minutes]");
-      const s = document.querySelector("[data-prod-seconds]");
-
-      if (d) d.textContent = t.days;
-      if (h) h.textContent = t.hours;
-      if (m) m.textContent = t.minutes;
-      if (s) s.textContent = t.seconds;
-    }
-
-    if (t.ended) {
-      finalizeBlackFridayUI();
-
-      document.querySelector(".bfp-ended")?.classList.add("show");
-
-      setTimeout(() => {
-        const banners = document.querySelectorAll(".bf-ended-banner");
-        banners.forEach((b) => b.classList.add("fade-out"));
-        setTimeout(() => banners.forEach((b) => b.remove()), 900);
-      }, 2000);
-    }
-  });
-
-  document.addEventListener("bf:ended", () => {
-    finalizeBlackFridayUI();
-
-    setTimeout(() => {
-      const banners = document.querySelectorAll(".bf-ended-banner");
-      banners.forEach((b) => b.classList.add("fade-out"));
-      setTimeout(() => banners.forEach((b) => b.remove()), 900);
-    }, 20000);
-  });
-})();
+document.addEventListener("bf:ended", () => {
+  applyBlackFridayVisuals(); // функция сама очистит DOM
+});

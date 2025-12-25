@@ -24,7 +24,7 @@
         const minutesEl = root.querySelector("[data-minutes]");
         const secondsEl = root.querySelector("[data-seconds]");
         const endedText = root.querySelector(".bf-ended");
-        const timerBox = root.querySelector(".bf-timer");
+        const timerBox = root.querySelector(".bfp-timer");
 
         function update() {
             const now = new Date();

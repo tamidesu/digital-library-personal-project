@@ -146,6 +146,20 @@
     });
   }
 
+  function normalizeBooks(books) {
+    const now = new Date().toISOString();
+    return (books || []).map((b) => ({
+      ...b,
+      status: b.status || "active",
+      createdAt: b.createdAt || now,
+      updatedAt: b.updatedAt || now,
+    }));
+  }
+
+  function onlyActiveBooks(books) {
+    return (books || []).filter((b) => String(b?.status ?? "active") === "active");
+  }
+
   // ---- fallback: localStorage (если IndexedDB недоступен/сломался) ----
   function initLocalFallback() {
     try {
@@ -185,7 +199,8 @@
     }
 
     window.LIB_DATA = LIB_DATA;
-    window.BOOKS = LIB_DATA.products;
+    LIB_DATA.products = normalizeBooks(LIB_DATA.products);
+    window.BOOKS = onlyActiveBooks(LIB_DATA.products);
     window.LIB_USERS = LIB_DATA.users;
 
     dispatchReady();
@@ -270,7 +285,8 @@
 
     LIB_DATA = next;
     window.LIB_DATA = LIB_DATA;
-    window.BOOKS = LIB_DATA.products;
+    LIB_DATA.products = normalizeBooks(LIB_DATA.products);
+    window.BOOKS = onlyActiveBooks(LIB_DATA.products);
     window.LIB_USERS = LIB_DATA.users;
 
     try {
@@ -304,3 +320,42 @@
     initLocalFallback();
   }
 })(window);
+
+(() => {
+  if (!("BroadcastChannel" in window)) return;
+  const ch = new BroadcastChannel("dl_sync");
+
+  ch.onmessage = async (e) => {
+    const msg = e.data || {};
+    if (msg.type === "books:updated") {
+      try {
+        const db = window.LIB_DB || await window.LibraryDB.open();
+        const books = await window.LibraryDB.getAll(db, "books");
+        window.LIB_DATA.products = books;
+        books = normalizeBooks(books);
+
+        window.LIB_DATA.products = books;        
+        window.BOOKS = onlyActiveBooks(books);     
+
+        document.dispatchEvent(new CustomEvent("books:updated", { detail: window.BOOKS }));
+
+        document.dispatchEvent(new CustomEvent("books:updated", { detail: books }));
+      } catch (err) {
+        console.warn("Failed to refresh books from IndexedDB", err);
+      }
+    }
+
+    if (msg.type === "users:updated") {
+      try {
+        const db = window.LIB_DB || await window.LibraryDB.open();
+        const users = await window.LibraryDB.getAll(db, "users");
+        window.LIB_DATA.users = users;
+        window.LIB_USERS = users;
+
+        document.dispatchEvent(new CustomEvent("users:updated", { detail: users }));
+      } catch (err) {
+        console.warn("Failed to refresh users from IndexedDB", err);
+      }
+    }
+  };
+})();

@@ -220,3 +220,232 @@ html[data-theme] .empty-card{
   color: white;
   box-shadow: 0 0 6px rgba(150, 0, 255, 0.3);
 }
+
+.qty-btn{
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: #e5e7eb;
+  font-weight: 800;
+  line-height: 1;
+  transition: .2s ease;
+}
+.qty-btn:hover{
+  transform: translateY(-1px);
+  border-color: rgba(168,85,247,.45);
+  box-shadow: 0 0 18px rgba(168,85,247,.18);
+}
+
+.btn-remove{
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,70,70,.45);
+  background: rgba(255,70,70,.06);
+  color: #ff9a9a;
+  font-weight: 700;
+  transition: .2s ease;
+}
+.btn-remove:hover{
+  transform: translateY(-1px);
+  background: rgba(255,70,70,.12);
+}
+/* убираем bootstrap "белизну" таблиц */
+.cart-table,
+.cart-table th,
+.cart-table td {
+  background: transparent !important;
+}
+
+.cart-table-wrap {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  padding: 18px;
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cart-table thead th {
+  font-weight: 700;
+  color: rgba(255,255,255,0.80);
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+.cart-table tbody td {
+  padding: 16px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  vertical-align: middle;
+}
+
+.cart-book {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cart-cover {
+  width: 56px;
+  height: 72px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.cart-title {
+  font-weight: 700;
+  color: rgba(255,255,255,0.92);
+}
+
+.qty-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.qty-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.90);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.qty-btn:hover {
+  border-color: rgba(168,85,247,0.35);
+  box-shadow: 0 0 18px rgba(168,85,247,0.20);
+}
+
+.qty-value {
+  min-width: 26px;
+  text-align: center;
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+}
+
+.price-box { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.plain-price { font-weight: 800; color:#e5e7eb; }
+
+.old-price {
+  color: rgba(255,106,193,0.85);
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+
+.new-price {
+  color: #a855f7;
+  font-weight: 900;
+}
+
+.bf-pill {
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255,0,230,0.25), rgba(109,0,255,0.25));
+  border: 1px solid rgba(255,0,230,0.25);
+  color: #ffb6ff;
+}
+
+.subtotal-val {
+  font-weight: 900;
+  color: #60a5fa;
+}
+
+.btn-remove {
+  border-radius: 14px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255,95,95,0.45);
+  background: rgba(255,95,95,0.10);
+  color: rgba(255,170,170,0.95);
+  font-weight: 800;
+}
+
+.btn-remove:hover {
+  background: rgba(255,95,95,0.16);
+}
+
+.cart-total-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 6px 2px;
+  font-weight: 800;
+}
+
+.cart-total-val {
+  color: #60a5fa;
+}
+
+/* ---- Cart table: force dark/glass look (Bootstrap override) ---- */
+.page-cart .cart-table .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: rgba(255,255,255,.88);
+  --bs-table-striped-bg: rgba(255,255,255,.03);
+  --bs-table-hover-bg: rgba(255,255,255,.05);
+  --bs-table-border-color: rgba(255,255,255,.10);
+
+  color: var(--bs-table-color);
+  background: transparent !important;
+}
+
+.page-cart .cart-table .table thead th {
+  color: rgba(255,255,255,.82);
+  border-bottom: 1px solid rgba(255,255,255,.10) !important;
+}
+
+.page-cart .cart-table .table td,
+.page-cart .cart-table .table th {
+  background: transparent !important;
+  border-color: rgba(255,255,255,.08) !important;
+}
+
+.page-cart .cart-table .table tbody tr:hover > * {
+  background: rgba(255,255,255,.04) !important;
+}
+
+/* Light theme поддержка (если у тебя есть theme toggle) */
+:root[data-theme="light"] .page-cart .cart-table .table {
+  --bs-table-color: #0b1020;
+  --bs-table-border-color: #e6e8ee;
+  --bs-table-striped-bg: rgba(8,12,26,.03);
+  --bs-table-hover-bg: rgba(8,12,26,.05);
+}
+:root[data-theme="light"] .page-cart .cart-table .table thead th {
+  color: #344256;
+}
+:root[data-theme="light"] .page-cart .cart-table .table td,
+:root[data-theme="light"] .page-cart .cart-table .table th {
+  border-color: #e6e8ee !important;
+}
+
+/* 1) внешний wrapper = главный блок */
+.cart-wrapper{
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 22px;
+  backdrop-filter: blur(14px);
+  padding: 22px;
+}
+
+/* 2) внутренний wrap = убираем второй слой */
+.cart-table-wrap{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}

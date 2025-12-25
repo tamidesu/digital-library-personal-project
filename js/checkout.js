@@ -1,3 +1,73 @@
+async function persistOrderToIndexedDB(order, submitResult, customerEmail) {
+  if (!window.LibraryDB) throw new Error("LibraryDB is not available");
+
+  const db = window.LIB_DB || await window.LibraryDB.open();
+  const nowIso = new Date().toISOString();
+
+  const currentUser = window.Auth?.getCurrentUser?.();
+  const userId = currentUser?.id ?? null;
+
+  // ===== Orders record (store: "orders") =====
+  const orderRecord = {
+    id: submitResult.orderId,          // keyPath = "id"
+    userId,                            // for index "by_user"
+    status: "paid",                    // for index "by_status"
+    createdAt: nowIso,                 // for index "by_created_at"
+    updatedAt: nowIso,
+
+    customer: {
+      fullName: order?.customer?.fullName || "",
+      email: customerEmail || order?.customer?.email || "",
+      phone: order?.customer?.phone || "",
+      address: order?.customer?.address || "",
+      city: order?.customer?.city || "",
+      zip: order?.customer?.zip || "",
+    },
+
+    totals: {
+      subtotal: +order.subtotal.toFixed(2),
+      shipping: +order.shipping.toFixed(2),
+      tax: +order.tax.toFixed(2),
+      total: +order.total.toFixed(2),
+    },
+
+    payment: {
+      txId: submitResult.txId,
+      provider: "PaymentGatewayMock",
+    },
+  };
+
+  await window.LibraryDB.putOne(db, "orders", orderRecord);
+
+  // ===== Order items records (store: "order_items") =====
+  const itemRecords = (order.items || []).map((it, idx) => ({
+    id: `${orderRecord.id}::${it.id}::${idx}`, // уникальный ключ
+    orderId: orderRecord.id,                  // for index "by_order"
+    bookId: it.id,                            // for index "by_book"
+    title: it.title,
+    price: +it.price,
+    qty: +it.qty,
+    subtotal: +it.subtotal.toFixed(2),
+    createdAt: nowIso,
+  }));
+
+  if (itemRecords.length) {
+    await window.LibraryDB.putMany(db, "order_items", itemRecords);
+  }
+
+  // optional: notify UI pieces if you want later (dropdown counts, purchases page)
+  document.dispatchEvent(new CustomEvent("orders:updated", { detail: orderRecord }));
+
+  // optional cross-tab sync
+  if ("BroadcastChannel" in window) {
+    const ch = new BroadcastChannel("dl_sync");
+    ch.postMessage({ type: "orders:updated" });
+    ch.close();
+  }
+
+  return orderRecord;
+}
+
 document.addEventListener('includes:loaded', ()=>{ 
   const items = (window.Cart?.items || []).map(i => new OrderItem({
     id: i.id, title: i.title, price: i.price, qty: i.qty
@@ -55,7 +125,12 @@ document.addEventListener('includes:loaded', ()=>{
     order.customer = new Customer({fullName,email,phone,address,city,zip});
  
     try{
-      const res = await order.submit(); 
+      const res = await order.submit();
+
+      // 1) Persist to IndexedDB (orders + order_items)
+      await persistOrderToIndexedDB(order, res, email);
+
+      // 2) Clear cart and redirect
       window.Cart?.clear();
       const q = new URLSearchParams({ orderId: res.orderId, email });
       location.href = `order-confirmed.html?${q.toString()}`;
